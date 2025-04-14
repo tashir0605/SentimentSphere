@@ -98,29 +98,30 @@ def main():
 
             st.metric(label="Confidence", value=f"{np.max(probability)*100:.2f}%")
 
-        with col2:
-            st.markdown("#### 📊 Prediction Probability")
-            proba_df = pd.DataFrame(probability, columns=pipe_lr.classes_)
-            proba_df_clean = proba_df.T.reset_index()
-            proba_df_clean.columns = ["emotions", "probability"]
+with col2:
+    st.markdown("#### 📊 Prediction Probability")
+    proba_df = pd.DataFrame(probability, columns=pipe_lr.classes_)
+    proba_df_clean = proba_df.T.reset_index()
+    proba_df_clean.columns = ["emotions", "probability"]
 
-            chart = alt.Chart(proba_df_clean).mark_bar().encode(
-               x=alt.X('emotions', sort='-y', axis=alt.Axis(labelColor='white', titleColor='white')),
-    y=alt.Y('probability', axis=alt.Axis(labelColor='white', titleColor='white')),
-    color=alt.Color('emotions', legend=None)
-).properties(
-    width=350,
-    height=300,
-    background='#1e1e1e'  # Lighter dark background for the chart
-).configure_view(
-    strokeWidth=0
-).configure_axis(
-    grid=False
-).configure_title(
-    color='white'
-)
+    chart = alt.Chart(proba_df_clean).mark_bar().encode(
+        x=alt.X('emotions', sort='-y', axis=alt.Axis(labelColor='white', titleColor='white')),
+        y=alt.Y('probability', axis=alt.Axis(labelColor='white', titleColor='white')),
+        color=alt.Color('emotions', legend=None)
+    ).properties(
+        width=350,
+        height=300,
+        background='#1e1e1e'  # Lighter dark background for the chart
+    ).configure_view(
+        strokeWidth=0
+    ).configure_axis(
+        grid=False
+    ).configure_title(
+        color='white'
+    )
 
-st.altair_chart(chart, use_container_width=True)
+    st.altair_chart(chart, use_container_width=True)
+
 
 if __name__ == '__main__':
     main()
