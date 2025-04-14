@@ -1,12 +1,15 @@
 import streamlit as st
-
+import os
 import pandas as pd
 import numpy as np
 import altair as alt
 
 import joblib
 
-pipe_lr = joblib.load(open("model/text_emotion.pkl", "rb"))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+model_path = os.path.join(BASE_DIR, "model", "text_emotion.pkl")
+
+pipe_lr = joblib.load(open(model_path, "rb"))
 
 emotions_emoji_dict = {"anger": ".", "disgust": ".", "fear": ".", "happy": ".", "joy": ".", "neutral": ".", "sad": ".",
                        "sadness": ".", "shame": ".", "surprise": "."}
