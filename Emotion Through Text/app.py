@@ -8,8 +8,8 @@ import joblib
 
 pipe_lr = joblib.load(open("model/text_emotion.pkl", "rb"))
 
-emotions_emoji_dict = {"anger": "😠", "disgust": "🤮", "fear": "😨😱", "happy": "🤗", "joy": "😂", "neutral": "😐", "sad": "😔",
-                       "sadness": "😔", "shame": "😳", "surprise": "😮"}
+emotions_emoji_dict = {"anger": ".", "disgust": ".", "fear": ".", "happy": ".", "joy": ".", "neutral": ".", "sad": ".",
+                       "sadness": ".", "shame": ".", "surprise": "."}
 
 
 def predict_emotions(docx):
