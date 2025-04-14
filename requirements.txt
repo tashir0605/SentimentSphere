@@ -4,3 +4,5 @@ numpy
 altair
 scikit-learn
 joblib
+opencv-python
+tensorflow
