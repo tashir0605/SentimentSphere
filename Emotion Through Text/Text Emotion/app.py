@@ -5,7 +5,7 @@ import numpy as np
 import altair as alt
 import joblib
 
-# Set page config
+# Page configuration
 st.set_page_config(
     page_title="Text Emotion Detector",
     page_icon="💬",
@@ -13,14 +13,40 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS styling
+# Custom CSS for dark theme
 st.markdown("""
     <style>
-    .stApp {
-        background-color: #f4f4f4;
+    body {
+        background-color: #121212;
+        color: white;
     }
-    textarea {
-        font-size: 16px !important;
+    .stApp {
+        background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+        color: white;
+    }
+    .stTextInput > div > div > input,
+    .stTextArea > div > textarea {
+        background-color: #1e1e1e !important;
+        color: #ffffff !important;
+        border: 1px solid #333333;
+    }
+    .stButton button {
+        background-color: #04AA6D;
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+    }
+    .stButton button:hover {
+        background-color: #028a57;
+    }
+    .css-1d391kg {
+        color: white !important;
+    }
+    .stMarkdown {
+        color: white !important;
+    }
+    .st-bc {
+        color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -30,72 +56,62 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(BASE_DIR, "model", "text_emotion.pkl")
 pipe_lr = joblib.load(open(model_path, "rb"))
 
-# Emoji mapping
+# Emoji dictionary
 emotions_emoji_dict = {
     "anger": "😠", "disgust": "🤮", "fear": "😨", "happy": "🤗",
     "joy": "😂", "neutral": "😐", "sad": "😔", "sadness": "😔",
     "shame": "😳", "surprise": "😮"
 }
 
-# Prediction functions
+# Emotion prediction
 def predict_emotions(docx):
     results = pipe_lr.predict([docx])
     return results[0]
 
+# Probability prediction
 def get_prediction_proba(docx):
     results = pipe_lr.predict_proba([docx])
     return results
 
-# Main App
+# App layout
 def main():
     st.title("🧠 Text Emotion Detector")
-    st.subheader("🎯 Understand emotions hidden in your text!")
+    st.subheader("🎯 Understand emotions hidden in your text")
 
-    # Sidebar
-    with st.sidebar:
-        st.image("https://em-content.zobj.net/source/microsoft-teams/363/thought-balloon_1f4ad.png", width=100)
-        st.header("About")
-        st.write("This app detects emotions from any given text using a trained ML model.")
-        st.write("Made with ❤️ using Streamlit")
+    with st.form(key='emotionForm'):
+        raw_text = st.text_area("Type something emotional...", placeholder="E.g. I'm so excited for my new journey!")
+        submit_button = st.form_submit_button(label="Analyze")
 
-    # Input form
-    with st.form(key='my_form'):
-        raw_text = st.text_area("Type Here", placeholder="e.g. I'm feeling amazing today!")
-        submit_text = st.form_submit_button(label='Submit')
-
-    if submit_text:
-        col1, col2 = st.columns(2)
-
+    if submit_button:
         prediction = predict_emotions(raw_text)
         probability = get_prediction_proba(raw_text)
 
-        with col1:
-            st.success("Original Text")
-            st.write(raw_text)
+        col1, col2 = st.columns(2)
 
-            st.success("Prediction")
+        with col1:
+            st.markdown("#### ✍️ Original Text")
+            st.info(raw_text)
+
+            st.markdown("#### 🎭 Predicted Emotion")
             emoji_icon = emotions_emoji_dict.get(prediction, "")
-            st.markdown(f"### 🎭 **Emotion:** `{prediction}` {emoji_icon}")
+            st.success(f"**{prediction.upper()}** {emoji_icon}")
+
             st.metric(label="Confidence", value=f"{np.max(probability)*100:.2f}%")
 
         with col2:
-            st.success("Prediction Probability")
+            st.markdown("#### 📊 Prediction Probability")
             proba_df = pd.DataFrame(probability, columns=pipe_lr.classes_)
             proba_df_clean = proba_df.T.reset_index()
             proba_df_clean.columns = ["emotions", "probability"]
 
-            fig = alt.Chart(proba_df_clean).mark_bar().encode(
+            chart = alt.Chart(proba_df_clean).mark_bar().encode(
                 x=alt.X('emotions', sort='-y'),
                 y='probability',
-                color=alt.Color('emotions', legend=None),
+                color='emotions',
                 tooltip=['emotions', 'probability']
-            ).properties(
-                width=300,
-                height=300
-            )
+            ).properties(width=350, height=300)
 
-            st.altair_chart(fig, use_container_width=True)
+            st.altair_chart(chart, use_container_width=True)
 
 if __name__ == '__main__':
     main()
-
