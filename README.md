@@ -11,7 +11,7 @@ This project is developed as part of a DC credit initiative and includes:
 ### 1. *Visual Emotion Recognition (CNN)*
 - Captures live webcam feed.
 - Uses a Convolutional Neural Network to classify facial emotions in real time.
-- Recognized emotions include: Happy, Sad, Angry, Neutral, Surprised, and more.
+- Recognized emotions include: Happy, Sad, Angry, Neutral, Surprised, and more.Roundtable
 
 ### 2. *Text-Based Emotion Recognition (NLP + LSTM)*
 - Accepts a sentence as input.
@@ -44,5 +44,5 @@ Each model runs independently but is hosted together on a unified *Streamlit* in
 
 Clone the repo:
 ```bash
-git clone [GitHub Repo Link]
+git clone https://github.com/tashir0605/SentimentSphere
 cd SentimentSphere
